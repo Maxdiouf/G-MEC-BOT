@@ -2,6 +2,7 @@ import discord
 from discord_components import DiscordComponents, ComponentsBot, Button, SelectOption, Select
 import discord.ext.commands as commands
 
+
 # set up the client
 
 client = commands.Bot("!")
@@ -13,8 +14,9 @@ DiscordComponents(client)
 
 @client.command()
 async def hello(ctx):
-    await ctx.send("hello", components = [
-        [Button(label="Hi", style="3", emoji = "🥴", custom_id="button1"), Button(label="Bye", style="4", emoji = "😔", custom_id="button2")]
+    await ctx.send("Bonjour @"+ctx.author.name)
+    await ctx.send("Pour pouvoir vous aider, veuillez choisir votre filière parmis les choix suivant :", components = [
+        [Button(label="Master", style="3", custom_id="button1"), Button(label="Bachelor", style="3", custom_id="button2"), Button(label="Bachelor", style="3", custom_id="button3")]
         ])
     interaction = await client.wait_for("button_click", check = lambda i: i.custom_id == "button1")
     await interaction.send(content = "Button clicked!", ephemeral=False)
