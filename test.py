@@ -16,10 +16,33 @@ DiscordComponents(client)
 async def hello(ctx):
     await ctx.send("Bonjour @"+ctx.author.name)
     await ctx.send("Pour pouvoir vous aider, veuillez choisir votre filière parmis les choix suivant :", components = [
-        [Button(label="Master", style="3", custom_id="button1"), Button(label="Bachelor", style="3", custom_id="button2"), Button(label="Bachelor", style="3", custom_id="button3")]
+        [Button(label="Grande école", style="1", custom_id="GrandeEcole"), Button(label="Master", style="1", custom_id="master"), Button(label="Prépa", style="1", custom_id="prepa"), Button(label="Bachelor", style="1", custom_id="bachelor")]
         ])
-    interaction = await client.wait_for("button_click", check = lambda i: i.custom_id == "button1")
-    await interaction.send(content = "Button clicked!", ephemeral=False)
+    
+    #grande ecole
+    interaction_grande_ecole = await client.wait_for("button_click", check = lambda i: i.custom_id == "GrandeEcole")
+    await interaction_grande_ecole.send("Faire un choix :", components = [
+        [Button(label="Grande école", style="link", custom_id="ok",url='https://discord.com')]
+        ])
+
+    #master
+    interaction_master = await client.wait_for("button_click", check = lambda i: i.custom_id == "master")
+    await interaction_master.send("choisissez votre formation :", components = [
+        [Button(label="Marketing digital & UX", style="1", custom_id="marketdigit"), Button(label="Data & IA", style="1", custom_id="data"), Button(label="CTO & tech lead", style="1", custom_id="cto"), Button(label="Product manager", style="1", custom_id="po"), Button(label="Cybersécurité", style="1", custom_id="cyber") , Button(label="Design tech", style="1", custom_id="design") , Button(label="Métaverse & univers virtuel", style="1", custom_id="meta")]
+        ])
+
+        #prepa
+    interaction_master = await client.wait_for("Faire un choix", check = lambda i: i.custom_id == "prepa")
+    await interaction_master.send("choisissez votre formation :", components = [
+        [Button(label="Grande école", style="link", custom_id="ko",url='https://discord.com')]
+        ])
+
+    #bachelor
+    interaction_bachelor = await client.wait_for("button_click", check = lambda i: i.custom_id == "bachelor")
+    await interaction_bachelor.send("choisissez votre formation :", components = [
+        [Button(label="Developpeur Web", style="1", custom_id="devweb"), Button(label="Data & IA", style="1", custom_id="dataia"), Button(label="3D", style="1", custom_id="3d"), Button(label="WebMarketing & UX", style="1", custom_id="marketux")]
+        ])
+
 
 
 # send a message with a Select component
