@@ -2,6 +2,8 @@ import discord
 
 from discord.ext import commands 
 
+
+
 client = commands.Bot(command_prefix="!")
 
 @client.command()
@@ -23,10 +25,17 @@ async def on_message(message):
 
     if message.channel == Help_channel and message.content.startswith('$help'):
         await Help_channel.send("Bonjour @"+message.author.name)
+        await Help_channel.send("Pour pouvoir vous aider, veuillez choisir votre filière parmis les chois suivant :")
+        await Help_channel.send("M - Master")
+        await Help_channel.send("B - Bachelor")
+
+
+
+
 
 
     if message.content == "del":
-        await message.channel.purge(limit=3)
+        await message.channel.purge(limit=30)
     
     if message.content.startswith("$dm"): 
         user = message.mentions[0]
