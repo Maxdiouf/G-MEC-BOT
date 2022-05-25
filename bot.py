@@ -1,10 +1,18 @@
-import discord 
-from discord.ext import commands
-bot = commands.Bot(command_prefix = "!", description = "Bot")
-
+import discord
+from discord_components import DiscordComponents, ComponentsBot, Button, SelectOption, Select
+import discord.ext.commands as commands
+bot = commands.Bot("!")
+DiscordComponents(bot)
 @bot.event
 async def on_ready():
     print("ready !")
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send("Bonjour @"+ctx.author.name)
+    await ctx.send("Pour pouvoir vous aider, veuillez choisir votre filière parmis les choix suivant :", components = [
+        [Button(label="Grande école", style="1", custom_id="GrandeEcole"), Button(label="Master", style="1", custom_id="master"), Button(label="Prépa", style="1", custom_id="prepa"), Button(label="Bachelor", style="1", custom_id="bachelor")]
+        ])
 
 @bot.command()
 async def coucou(ctx):
@@ -29,7 +37,7 @@ async def say(ctx, *texte):
 
 @bot.command()
 async def clear(ctx, nombre : int):
-    messages = await ctx.channels.history(limit = nombre+1).flatten()
+    messages = await ctx.channel.history(limit = nombre+1).flatten()
     for message in messages :
         await message.delete()
 
@@ -57,7 +65,17 @@ async def unban(ctx, user, *raison):
             return
     await ctx.send("l'utilisateur que vous chercher n'est pas disponnible.")
 
-
+@bot.command()
+async def cuisiner(ctx):
+    await ctx.send("envoyer le plat que vous voulez cuisiner")
+    def check(message):
+        return message.author == ctx.message.author and ctx.message.channel == message.channel
+    
+    recette = await bot.wait_for("message", timeout = 10, check=check)
+    print(recette.content)
+    message = await ctx.send(f"La preparation de {recette.content} va commencer. Veuillez valider en reagissant avec :white_check_mark: ou :x:")
+    await message.add_reaction(":white_check_mark:")
+    await message.add_reaction(':x:')
 
 
 bot.run('OTc4MjI5MTgwMjc5OTUxMzYw.Gz91wd.5qmKnbDlQo97EjLlPl6urguX2Fj0L1pEmpd3DA')
