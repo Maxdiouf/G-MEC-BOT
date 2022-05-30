@@ -2,7 +2,6 @@ import discord
 from datetime import datetime
 
 from discord.ext import commands 
-datetime.now().strftime('%H:%M')
 client = commands.Bot(command_prefix="$")
 
 class Node :
@@ -17,25 +16,38 @@ class Node :
         for child in self.list_child_node:
             if child.keyword in txt:
                 child.user_response()
+
+docu=[
+    Node("Tu peut acceder à la convention de stage 2021/2022 ici : https://assets.jobteaser.com/upload_file/uploads/Convention_de_Stage_2022_-_fran%C3%A7ais.3417430645.pdf","convention",[]),
+    Node("T'on emploi du temps se trouve sur hyperplanningn si tu as oublié t'es codes envoi un mp à Brontis","emploi du temps",[]),
+]
 administration = [
-    Node("Frais de scolarité ! Les frais sont de 7500 €, qui peuvent etre payé en 7 mensulatées(avec frais)","frais",[]),
-    Node("debut octobre ","date",[]),
-    Node("envoi un mp a Brontis","offre",[]),
+    Node("Frais de scolarité ! Que souhaite tu savoir?","frais",[Node("Les frais de scolarités pour cette années s'élèvent à 7 500€","montant",[]),Node("Les modalitées de paiment sont indiquées sur t'on contrat d'inscription, si tu souhaite plus d'information je t'invite à te raprocher de la compta : compta@hetic.com","modalité",[]),]),
+    Node("De quel document à tu besoin ?","document",docu),
+    Node("envoi un mp a Brontis (@ErwinTheCat#8778)","",[]),
     Node("https://assets.jobteaser.com/upload_file/uploads/Convention_de_Stage_2022_-_fran%C3%A7ais.3417430645.pdf","convention",[])
 ]
 stage = [
     Node("4 juillet ","date",[]),
-    Node("envoi un mp a Brontis","offre",[]),
-    Node("https://assets.jobteaser.com/upload_file/uploads/Convention_de_Stage_2022_-_fran%C3%A7ais.3417430645.pdf","convention",[])
+    Node("envoi un mp à Brontis (@ErwinTheCat#8778)","offre",[]),
+    Node("envoi un mp à Giuseppe (@Giuseppe#1810)","CV",[]),
+    Node("Bravo ! envoi toute suite un mp à Brontis (@ErwinTheCat#8778) pour lui annoncer la bonne nouvelle, il te dira comment s'y prendre","trouvé",[]),
+    docu[0]
 ]
 alternance = [
     Node("1er année 2s/1s, 2eme année 3s/1s","rythme",[]),
     Node("debut octobre ","date",[]),
-    Node("envoi un mp a Brontis","offre",[]),
-    Node("https://assets.jobteaser.com/upload_file/uploads/Convention_de_Stage_2022_-_fran%C3%A7ais.3417430645.pdf","convention",[])
+    Node("envoi un mp à Brontis (@ErwinTheCat#8778)","offre",[]),
+    Node("envoi un mp à Giuseppe (@Giuseppe#1810)","CV",[]),
+    Node("Bravo ! envoi toute suite un mp à Brontis (@ErwinTheCat#8778) pour lui annoncer la bonne nouvelle, il te dira comment s'y prendre","trouvé",[]),
+    docu[0]
+]
+back = [
+    Node("php ! Quel language ?","back",[]),
+
 ]
 cours = [
-    Node("Back-end ! Quel language ?","back",[]),
+    Node("Back-end ! Quel language ?","back",back),
     Node("Front-end ! Quel language ?","front",[]),
     Node("Programation ! Quel language ?","programation",[]),
     Node("Design ! Tu veut en savoir plus sur le logiciel FIGMA ou la théorie","design",[]),
@@ -54,52 +66,37 @@ first_list = [
 ]
 first_node = Node("Salut !\nJe suis G-SHAME, HETIC m'a engager afin d'apporter de l'aide et répondre à ses (nouveaux) étudiants en développement WEB.\nA tout moment tu peut ecrire '$info' pour comprendre mon fonctionnement.\nDit moi comment je peut t'aider ?","help",first_list)
 
-
+current_node = first_node
 #
 @client.event
 async def on_message(message):
-    global start
-    start = False
-
-    message.content = message.content.lower()
-    if message.author == client.user:
-        return
-
     Help_channel = client.get_channel(978271940055797780)
+    global current_node
     if message.channel == Help_channel and message.content =='$help':
         await Help_channel.send("@"+message.author.name)
         await Help_channel.send(first_node.question)
 
-    for i in range(len(first_node.list_child_node)):
-        print(i)
-        if first_node.list_child_node[i].keyword in message.content:
-            print("ok")
-            await Help_channel.send(first_node.list_child_node[i].question)
-
-    await client.process_commands(message)
+    for child in current_node.list_child_node:
+        if message.content == child.keyword:
+            await Help_channel.send(child.question)
+            current_node = child
 
 #ABOUT
 @client.command()
 async def info(ctx):
-    await ctx.send("ABOUT :")
-    await ctx.send("Comment je fonctionne?")
-    await ctx.send("Je dirige la discussion et je repère les mots clèfs pour répondre la plus précisement.")
-    await ctx.send("Les commandes possibles : ")
-    await ctx.send("$help -> démarrer une nouvelle discussion (uniquement sur le chanel 'G-SHAME help').")
-    await ctx.send("$clear nb -> supprimer des messages (nb=nombre de message à supprimer).")
-    await ctx.send("$server -> afficher les information relative au serveur.")
-    await ctx.send("$date -> afficher la date.")
-    await ctx.send("$heure -> afficher l'heure'.")
+    print("ok")
+    await ctx.send("info :\nComment je fonctionne?\nJe dirige la discussion et je repère les mots clèfs pour répondre la plus précisement.\nLes commandes possibles : \n$help -> démarrer une nouvelle discussion (uniquement sur le chanel 'G-SHAME help').\n$clear nb -> supprimer des messages (nb=nombre de message à supprimer).\n$server -> afficher les information relative au serveur.\n$date -> afficher la date.\n$heure -> afficher l'heure'.")
 
 #Heure
-@client.command
-async def heure():
-    await client.send(datetime.now().strftime('%H:%M:%S'))
+@client.command()
+async def heure(ctx):
+    await ctx.send(datetime.now().strftime('%H:%M:%S'))
 
 #Date
-@client.command
-async def date():
-    await client.send(datetime.now().strftime('%d-%m-%Y'))
+@client.command()
+async def date(ctx):
+    await ctx.send(datetime.now().strftime('%d-%m-%Y'))
+
 #nouveau membre
 @client.event
 async def on_member_join(member):
