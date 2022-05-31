@@ -125,28 +125,33 @@ first_list = [
     Node("Le stage ! Que veut tu savoir dessus ?","stage",stage),
     Node("Secraitariat ! De quoi à-tu besoin","Administration",administration)
 ]
-first_node = Node("Salut !\nJe suis G-SHAME, HETIC m'a engager afin d'apporter de l'aide et répondre à ses (nouveaux) étudiants en développement WEB.\nA tout moment tu peut ecrire '$info' pour comprendre mon fonctionnement.\nDit moi comment je peut t'aider ?","help",first_list)
+first_node = Node("Salut !\nJe suis G-MEC, HETIC m'a engager afin d'apporter de l'aide et répondre à ses (nouveaux) étudiants en développement WEB.\nA tout moment tu peut ecrire '$info' pour comprendre mon fonctionnement.\nDit moi comment je peut t'aider ?","help",first_list)
 
 current_node = first_node
 #
 @client.event
 async def on_message(message):
+    message.content = message.content.lower()
+    if message.author == client.user:
+        return
     Help_channel = client.get_channel(978271940055797780)
     global current_node
+
     if message.channel == Help_channel and message.content =='$help':
         await Help_channel.send("@"+message.author.name)
         await Help_channel.send(first_node.question)
 
     for child in current_node.list_child_node:
-        if child.keyword in message.content :
+        if child.keyword in message.content:
             await Help_channel.send(child.question)
             current_node = child
+        
 
 #ABOUT
 @client.command()
 async def info(ctx):
     print("ok")
-    await ctx.send("info :\nComment je fonctionne?\nJe dirige la discussion et je repère les mots clèfs pour répondre la plus précisement.\nLes commandes possibles : \n$help -> démarrer une nouvelle discussion (uniquement sur le chanel 'G-SHAME help').\n$clear nb -> supprimer des messages (nb=nombre de message à supprimer).\n$server -> afficher les information relative au serveur.\n$date -> afficher la date.\n$heure -> afficher l'heure'.")
+    await ctx.send("info :\nComment je fonctionne?\nJe dirige la discussion et je repère les mots clèfs pour répondre le plus précisement.\nLes commandes possibles : \n$help -> démarrer une nouvelle discussion (uniquement sur le chanel 'G-SHAME help').\n$clear nb -> supprimer des messages (nb=nombre de message à supprimer).\n$server -> afficher les information relative au serveur.\n$date -> afficher la date.\n$heure -> afficher l'heure'.")
 
 #Heure
 @client.command()
