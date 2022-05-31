@@ -1,6 +1,17 @@
 import discord 
 from datetime import datetime
 
+default_intents = discord.Intents.default()
+default_intents.members = True
+client  = discord.Client(intents=default_intents)
+
+ #réagir aprés l'arrivé d'un membre
+@client.event
+async def on_member_join(member):
+   general_channel: discord.TextChannel = client.get_channel(978233923307991044)
+   await general_channel.send(content=f"Hey on vous souhaite la bienvenu sur ce serveur {member.display_name} !")
+
+
 from discord.ext import commands 
 client = commands.Bot(command_prefix="$")
 
